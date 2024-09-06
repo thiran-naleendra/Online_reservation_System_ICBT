@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="restaurant" />
+        <module name="Online_reservation_System_Backend_ICBT" />
       </profile>
     </annotationProcessing>
   </component>
