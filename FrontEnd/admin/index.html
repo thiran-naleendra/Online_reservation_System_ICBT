@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TNW Restaurant - Home</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        background: url("https://images.pexels.com/photos/11299744/pexels-photo-11299744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
+          no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        flex-direction: column;
+      }
+
+      .container {
+        text-align: center;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.3); /* Transparent background */
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px; /* Margin between containers */
+      }
+
+      h1 {
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-body {
+        padding: 30px;
+      }
+
+      .btn-custom {
+        background-color: #ff7e5f;
+        border: none;
+        padding: 10px 20px;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .btn-custom:hover {
+        background-color: #feb47b;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar ">
+      <div class="container">
+          <a class="navbar-brand" href="#" style="color: #ffffff">TNW Restaurant</a>
+          <a href="../index.html" class="btn btn-danger logout-btn">Logout</a>
+      </div>
+  </nav>
+    <br /><br />
+
+    <div class="container">
+      <!-- <h1 style="color: #ff3300">TNW Restaurant</h1> -->
+      <div class="row justify-content-center">
+        <!-- Add Admin -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Add Admin</h3>
+              <br /><br /><br />
+              <a href="./regUser.html"
+                ><button class="btn btn-custom">Add Admin</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Veg Menu -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Add Veg Menu</h3>
+              <br /><br /><br />
+              <a href="./AddVeg.html"
+                ><button class="btn btn-custom">Add Veg Menu</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Non Veg Menu -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Add Non Veg Menu</h3>
+              <br /><br /><br />
+              <a href="./AddNonVeg.html"
+                ><button class="btn btn-custom">Add Non Veg Menu</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Hotel -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Add Hotel</h3>
+              <br /><br /><br />
+              <a href="./addHotel.html"
+                ><button class="btn btn-custom">Add Hotel</button></a
+              >
+            </div>
+          </div>
+        </div>
+        <h1 style="color: #ff3300">TNW Restaurant</h1>
+
+        <!-- Add Tile A -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Edit Veg Menu</h3>
+              <br /><br /><br />
+              <a href="./editVeg.html"
+                ><button class="btn btn-custom">Edit Veg Menu</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Tile B -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Edit NonVeg Menu</h3>
+              <br /><br /><br />
+              <a href="./editNonVeg.html"
+                ><button class="btn btn-custom">Edit NonVeg Menu</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Tile C -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Edit Admin</h3>
+              <br /><br /><br />
+              <a href="./editAdmin.html"
+                ><button class="btn btn-custom">Edit Admin</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Tile D -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h3 class="card-title">Tile D</h3>
+              <br /><br /><br />
+              <a href="#"
+                ><button class="btn btn-custom">Tile D</button></a
+              >
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bootstrap JS (for any future interactivity) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

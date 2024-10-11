@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>User List</h2>
+        <table id="user-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Action</th> <!-- New column for delete action -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- User data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to fetch and display users
+        function fetchUsers() {
+            fetch('http://localhost:8086/api/users')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch users');
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    const userTableBody = document.getElementById('user-table').getElementsByTagName('tbody')[0];
+                    users.forEach(user => {
+                        const row = userTableBody.insertRow();
+                        row.insertCell(0).innerText = user.id;
+                        row.insertCell(1).innerText = user.name;
+                        row.insertCell(2).innerText = user.email;
+
+                        // Create and append the delete button
+                        const deleteCell = row.insertCell(3);
+                        const deleteButton = document.createElement('button');
+                        deleteButton.innerText = 'Delete';
+                        deleteButton.className = 'delete-button';
+                        deleteButton.onclick = () => deleteUser(user.id); // Set up delete function
+                        deleteCell.appendChild(deleteButton);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching users. Check the console for details.');
+                });
+        }
+
+        // Function to delete a user
+        function deleteUser(id) {
+            if (confirm(`Are you sure you want to delete user with ID ${id}?`)) {
+                fetch(`http://localhost:8086/api/users/delete/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete user');
+                    }
+                    return response.text(); // Assuming the response is a text message
+                })
+                .then(message => {
+                    alert(message); // Show a success message
+                    // Refresh the user list
+                    const userTableBody = document.getElementById('user-table').getElementsByTagName('tbody')[0];
+                    userTableBody.innerHTML = ''; // Clear existing rows
+                    fetchUsers(); // Re-fetch users
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the user. Check the console for details.');
+                });
+            }
+        }
+
+        // Fetch users on page load
+        window.onload = fetchUsers;
+    </script>
+</body>
+</html>

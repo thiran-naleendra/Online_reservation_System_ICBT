@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #response-message {
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Hotel List</h2>
+        <table id="hotel-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Rating</th>
+                    <th>Capacity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Hotels will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <div id="response-message"></div>
+    </div>
+
+    <script>
+        // Function to fetch hotels and display them in the table
+        function fetchHotels() {
+            fetch('http://localhost:8086/api/hotels')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch hotels');
+                    }
+                    return response.json();
+                })
+                .then(hotels => {
+                    const hotelTableBody = document.getElementById('hotel-table').getElementsByTagName('tbody')[0];
+                    hotelTableBody.innerHTML = ''; // Clear any existing rows
+
+                    hotels.forEach(hotel => {
+                        const row = hotelTableBody.insertRow();
+                        row.insertCell(0).innerText = hotel.id;
+                        row.insertCell(1).innerText = hotel.name;
+                        row.insertCell(2).innerText = hotel.location;
+                        row.insertCell(3).innerText = hotel.ratings !== null ? hotel.ratings : 'N/A';
+                        row.insertCell(4).innerText = hotel.capacity !== null ? hotel.capacity : 'N/A';
+
+                        // Create the delete button
+                        const actionsCell = row.insertCell(5);
+                        const deleteButton = document.createElement('button');
+                        deleteButton.innerText = 'Delete';
+                        deleteButton.className = 'delete-button';
+                        deleteButton.onclick = () => deleteHotel(hotel.id); // Pass hotel ID to delete function
+                        actionsCell.appendChild(deleteButton);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching hotels. Check the console for details.');
+                });
+        }
+
+        // Function to delete a hotel by ID
+        function deleteHotel(hotelId) {
+            if (confirm(`Are you sure you want to delete the hotel with ID: ${hotelId}?`)) {
+                fetch(`http://localhost:8086/api/hotels/delete/${hotelId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete hotel');
+                    }
+                    return response.text(); // Assuming the response is a text message
+                })
+                .then(message => {
+                    document.getElementById('response-message').innerText = message;
+                    fetchHotels(); // Refresh the hotel list after deletion
+                })
+                .catch(error => {
+                    document.getElementById('response-message').innerText = `Error: ${error.message}`;
+                });
+            }
+        }
+
+        // Fetch hotels on page load
+        window.onload = fetchHotels;
+    </script>
+</body>
+</html>

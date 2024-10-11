@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Registration</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 400px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #response-message {
+        margin-top: 20px;
+        text-align: center;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Admin Registration</h2>
+      <form id="register-form" onsubmit="registerUser(event)">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit">Register</button>
+      </form>
+      <br />
+      <div style="text-align: center">
+        <a href="Login.html"> Login </a> <br>
+       
+      </div>
+
+      <div id="response-message"></div>
+    </div>
+
+    <script>
+      function registerUser(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const user = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+        };
+
+        // Make the POST request to register the user
+        fetch("http://localhost:8086/api/users/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to register user");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById(
+              "response-message"
+            ).innerText = `User registered successfully: ${data.name}`;
+            document.getElementById("register-form").reset(); // Reset the form
+          })
+          .catch((error) => {
+            document.getElementById("response-message").innerText =
+              error.message;
+          });
+      }
+    </script>
+  </body>
+</html>
