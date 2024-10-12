@@ -58,8 +58,6 @@
         .edit-button:hover {
             background-color: #0056b3;
         }
-
-        /* Stylish Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -70,7 +68,7 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px); /* Blurred background */
+            backdrop-filter: blur(5px);
             padding-top: 60px;
         }
         .modal-content {
@@ -130,7 +128,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Admin List</h2>
+        <h2>User List</h2>
         <table id="user-table">
             <thead>
                 <tr>
@@ -141,12 +139,10 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- User data will be inserted here -->
             </tbody>
         </table>
     </div>
 
-    <!-- Modal for editing user -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -154,11 +150,11 @@
             <form id="editForm">
                 <input type="hidden" id="userId" />
                 <label for="userName">Name:</label>
-                <input type="text" id="userName" required /><br><br>
+                <input type="text" id="userName" required />
                 <label for="userEmail">Email:</label>
-                <input type="email" id="userEmail" required /><br><br>
+                <input type="email" id="userEmail" required />
                 <label for="userPassword">Password:</label>
-                <input type="password" id="userPassword" required /><br><br>
+                <input type="password" id="userPassword" required />
                 <button type="submit">Update User</button>
             </form>
         </div>
@@ -167,39 +163,38 @@
     <script>
         let currentUserId;
 
-        // Function to fetch and display users with the name "admin"
         function fetchUsers() {
             fetch('http://localhost:8086/api/users')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch users');
-                    }
+                    if (!response.ok) throw new Error('Failed to fetch users');
                     return response.json();
                 })
                 .then(users => {
                     const userTableBody = document.getElementById('user-table').getElementsByTagName('tbody')[0];
-                    userTableBody.innerHTML = ''; // Clear existing rows
-                    // Filter users whose name is "admin"
-                    const adminUsers = users.filter(user => user.name.toLowerCase() === 'admin');
-                    adminUsers.forEach(user => {
+                    userTableBody.innerHTML = '';
+                    const filteredUsers = users.filter(user => user.name.toLowerCase() !== 'admin');
+                    if (filteredUsers.length === 0) {
+                        const row = userTableBody.insertRow();
+                        const cell = row.insertCell(0);
+                        cell.colSpan = 4;
+                        cell.innerText = "No users found.";
+                        return;
+                    }
+                    filteredUsers.forEach(user => {
                         const row = userTableBody.insertRow();
                         row.insertCell(0).innerText = user.id;
                         row.insertCell(1).innerText = user.name;
                         row.insertCell(2).innerText = user.email;
-
-                        // Create and append the edit button
                         const actionCell = row.insertCell(3);
                         const editButton = document.createElement('button');
                         editButton.innerText = 'Edit';
                         editButton.className = 'edit-button';
-                        editButton.onclick = () => openEditModal(user); // Set up edit function
+                        editButton.onclick = () => openEditModal(user);
                         actionCell.appendChild(editButton);
-
-                        // Create and append the delete button
                         const deleteButton = document.createElement('button');
                         deleteButton.innerText = 'Delete';
                         deleteButton.className = 'delete-button';
-                        deleteButton.onclick = () => deleteUser(user.id); // Set up delete function
+                        deleteButton.onclick = () => deleteUser(user.id);
                         actionCell.appendChild(deleteButton);
                     });
                 })
@@ -209,23 +204,20 @@
                 });
         }
 
-        // Function to open the edit modal
         function openEditModal(user) {
-            currentUserId = user.id; // Store current user ID
+            currentUserId = user.id;
             document.getElementById('userName').value = user.name;
             document.getElementById('userEmail').value = user.email;
-            document.getElementById('userPassword').value = user.password; // Fetch current password (if needed)
+            document.getElementById('userPassword').value = '';
             document.getElementById('editModal').style.display = 'block';
         }
 
-        // Function to close the modal
         function closeModal() {
             document.getElementById('editModal').style.display = 'none';
         }
 
-        // Function to update user
         document.getElementById('editForm').onsubmit = function(event) {
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault();
             const name = document.getElementById('userName').value;
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
@@ -238,19 +230,17 @@
                 body: JSON.stringify({ 
                     name, 
                     email, 
-                    password: password || undefined // If password is empty, leave it unchanged
+                    password: password || undefined 
                 })
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to update user');
-                }
+                if (!response.ok) throw new Error('Failed to update user');
                 return response.text();
             })
             .then(message => {
                 alert(message);
-                closeModal(); // Close the modal
-                fetchUsers(); // Refresh the user list
+                closeModal(); 
+                fetchUsers(); 
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -258,21 +248,18 @@
             });
         };
 
-        // Function to delete a user
         function deleteUser(id) {
             if (confirm(`Are you sure you want to delete user with ID ${id}?`)) {
                 fetch(`http://localhost:8086/api/users/delete/${id}`, {
                     method: 'DELETE'
                 })
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to delete user');
-                    }
-                    return response.text(); // Assuming the response is a text message
+                    if (!response.ok) throw new Error('Failed to delete user');
+                    return response.text(); 
                 })
                 .then(message => {
-                    alert(message); // Show a success message
-                    fetchUsers(); // Re-fetch users
+                    alert(message); 
+                    fetchUsers(); 
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -281,8 +268,7 @@
             }
         }
 
-        // Fetch users on page load
         window.onload = fetchUsers;
     </script>
-</body>
+</body>  
 </html>

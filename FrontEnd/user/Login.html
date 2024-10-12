@@ -65,7 +65,7 @@
       <br />
       <div style="text-align: center">
         <a href="regUser.html">Signup</a><br />
-        <a href="../main.html">
+        <a href="../index.html">
           <h3>Main Page</h3>
         </a>
       </div>
@@ -74,16 +74,16 @@
     </div>
 
     <script>
-      // Function to handle user login
+      
       function loginUser(event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault(); 
 
         const user = {
           email: document.getElementById("email").value,
           password: document.getElementById("password").value,
         };
 
-        // Make the POST request to login
+        // request to login
         fetch("http://localhost:8086/api/users/login", {
           method: "POST",
           headers: {
@@ -98,7 +98,7 @@
             return response.json();
           })
           .then((data) => {
-            // sessionStorage
+            
             sessionStorage.setItem("userEmail", user.email);
             sessionStorage.setItem("userToken", data.token); // Assuming the response contains a token
 

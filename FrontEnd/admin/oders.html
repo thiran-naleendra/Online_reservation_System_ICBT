@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Order List</h2>
+        <table id="order-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Items</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Order data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to fetch and display orders
+function fetchOrders() {
+    fetch('http://localhost:8086/api/orders')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders');
+            }
+            return response.json();
+        })
+        .then(orders => {
+            const orderTableBody = document.getElementById('order-table').getElementsByTagName('tbody')[0];
+            orderTableBody.innerHTML = ''; // Clear existing rows before populating
+            orders.forEach(order => {
+                const row = orderTableBody.insertRow();
+                row.insertCell(0).innerText = order.id;
+
+                // Create a list element for items
+                const itemsList = document.createElement('ul');
+
+                // Loop through items to create bullet points
+                order.items.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = `${item.name} (x${item.quantity}) - Rs.${item.price.toFixed(2)}`;
+                    itemsList.appendChild(listItem);
+                });
+
+                // Insert the unordered list into the cell for items
+                const itemsCell = row.insertCell(1);
+                itemsCell.appendChild(itemsList); // Append the list to the cell
+
+                // Displaying total price with formatting
+                row.insertCell(2).innerText = `Rs.${order.totalPrice.toFixed(2)}`;
+
+                // Create and append the delete button
+                const deleteCell = row.insertCell(3);
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Delete';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = () => deleteOrder(order.id); // Set up delete function
+                deleteCell.appendChild(deleteButton);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while fetching orders. Check the console for details.');
+        });
+}
+
+
+        // Function to delete an order
+        function deleteOrder(id) {
+            if (confirm(`Are you sure you want to delete order with ID ${id}?`)) {
+                fetch(`http://localhost:8086/api/orders/delete/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete order');
+                    }
+                    return response.text(); // Assuming the response is a text message
+                })
+                .then(message => {
+                    alert(message); // Show a success message
+                    // Refresh the order list
+                    fetchOrders(); // Re-fetch orders
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the order. Check the console for details.');
+                });
+            }
+        }
+
+        // Fetch orders on page load
+        window.onload = fetchOrders;
+    </script>
+</body>
+</html>
